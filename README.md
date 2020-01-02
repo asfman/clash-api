@@ -1,6 +1,9 @@
-## clash-proxy [![clash-proxy](https://img.shields.io/npm/v/clash-proxy.svg)](https://npmjs.org/clash-proxy)
+## clash-proxy
 
 > simple javascript api for [clash](https://github.com/Dreamacro/clash)
+
+[![clash-proxy](https://img.shields.io/npm/v/clash-proxy.svg)](https://npmjs.org/clash-proxy)
+[![Build Status](https://travis-ci.org/song940/clash-proxy.svg?branch=master)](https://travis-ci.org/song940/clash-proxy)
 
 ### Installation
 
