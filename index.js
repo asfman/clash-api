@@ -1,49 +1,41 @@
-const http = require('http');
+require('isomorphic-fetch');
 
-const readStream = stream => new Promise((resolve, reject) => {
-  const buffer = [];
-  stream
-    .on('error', reject)
-    .on('data', chunk => buffer.push(chunk))
-    .on('end', () => resolve(Buffer.concat(buffer)))
-});
 /**
  * Clash API
  * @docs https://clash.gitbook.io/doc/
  * @param {*} param0 
  */
 const Clash = ({ api, secret }) => {
-  const request = (method, path, params = {}) => {
+  const request = (method, path, body) => {
     const headers = {
-      Authorization: `Bearer ${secret}`
+      'Content-Type': 'application/json'
     };
-    return new Promise((resolve, reject) => {
-      const req = http.request(api + path, {
+    if (secret) {
+      headers['Authorization'] = `Bearer ${secret}`;
+    }
+    return Promise
+      .resolve()
+      .then(() => fetch(api + path, {
         method,
-        headers
-      }, resolve);
-      req.end(JSON.stringify(params));
-    });
+        headers,
+        body: body && JSON.stringify(body),
+      }));
   };
   return {
     /**
      * @docs https://clash.gitbook.io/doc/restful-api/common#获得当前的流量
      * @param {*} cb 
      */
-    async traffic(cb) {
-      const response = await request('get', '/traffic');
-      response.on('data', chunk => cb(JSON.parse(chunk)));
-      return this;
+    traffic() {
+      return request('get', '/traffic');
     },
     /**
      * @docs https://clash.gitbook.io/doc/restful-api/common#获得实时日志
      * @param {*} level 
      * @param {*} cb 
      */
-    async logs(level, cb) {
-      const response = await request('get', `/logs?level=${level}`);
-      response.on('data', chunk => cb(JSON.parse(chunk)));
-      return this;
+    logs(level) {
+      return request('get', `/logs?level=${level}`);
     },
     /**
      * @docs https://clash.gitbook.io/doc/restful-api/proxies#获取所有代理
@@ -52,8 +44,7 @@ const Clash = ({ api, secret }) => {
       return Promise
         .resolve()
         .then(() => request('get', `/proxies`))
-        .then(readStream)
-        .then(JSON.parse)
+        .then(res => res.json())
         .then(data => data.proxies)
     },
     /**
@@ -64,8 +55,8 @@ const Clash = ({ api, secret }) => {
       return Promise
         .resolve()
         .then(() => request('get', `/proxies/${name}`))
-        .then(readStream)
-        .then(JSON.parse)
+        .then(res => res.json())
+
     },
     /**
      * @docs https://clash.gitbook.io/doc/restful-api/proxies#获取单个代理的延迟
@@ -77,8 +68,7 @@ const Clash = ({ api, secret }) => {
       return Promise
         .resolve()
         .then(() => request('get', `/proxies/${name}/delay?url=${url}&timeout=${timeout}`))
-        .then(readStream)
-        .then(JSON.parse)
+        .then(res => res.json())
     },
     /**
      * @docs https://clash.gitbook.io/doc/restful-api/proxies#切换Selector中选中的代理
@@ -89,12 +79,7 @@ const Clash = ({ api, secret }) => {
       return Promise
         .resolve()
         .then(() => request('put', `/proxies/${selector}`, { name }))
-        .then(async res => {
-          if (res.statusCode === 204) return true;
-          const response = await readStream(res);
-          const { error } = JSON.parse(response);
-          throw new Error(error);
-        });
+        .then(res => res.status === 204)
     },
     /**
      * rules
@@ -104,19 +89,23 @@ const Clash = ({ api, secret }) => {
       return Promise
         .resolve()
         .then(() => request('get', '/rules'))
-        .then(readStream)
-        .then(JSON.parse)
+        .then(res => res.json())
         .then(data => data.rules)
     },
     /**
      * https://clash.gitbook.io/doc/restful-api/config#获得当前的基础设置
      */
-    config() {
+    config(conf) {
+      if(conf) {
+        return Promise
+        .resolve()
+        .then(() => request('PATCH', '/configs', conf))
+        .then(res => res.status == 204)
+      }
       return Promise
         .resolve()
         .then(() => request('get', '/configs'))
-        .then(readStream)
-        .then(JSON.parse)
+        .then(res => res.json())
     }
   };
 };

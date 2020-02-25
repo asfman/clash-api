@@ -21,7 +21,7 @@ test('clash#proxy', async () => {
 });
 
 test('clash#delay', async () => {
-  const delay = await clash.delay('vmess-01');
+  const delay = await clash.delay('v2net-auto');
   assert.ok(delay);
   assert.ok(delay.delay, delay.message);
 });
@@ -45,6 +45,6 @@ test('clash#config', async () => {
 });
 
 test('clash#switch', async () => {
-  const result = await clash.switch('Proxy', 'auto');
+  const result = await clash.switch('Proxy', 'v2net-auto');
   assert.ok(result);
 });
