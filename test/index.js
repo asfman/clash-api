@@ -1,10 +1,11 @@
-const test = require('./test');
-const assert = require('assert');
-const clash = require('..')({
-  secret: 'song940@163.com',
-  api: 'http://lsong.me:9090'
-});
+import assert from 'assert';
+import { test } from './test.js';
+import { Clash } from '../index.js';
 
+const clash = new Clash({
+  secret: 'song940@163.com',
+  api: 'http://clash.lsong.one:8888'
+});
 
 test('clash#proxies', async () => {
   const proxies = await clash.proxies();
@@ -21,7 +22,7 @@ test('clash#proxy', async () => {
 });
 
 test('clash#delay', async () => {
-  const delay = await clash.delay('v2net-auto');
+  const delay = await clash.delay('trojan-auto');
   assert.ok(delay);
   assert.ok(delay.delay, delay.message);
 });
@@ -45,6 +46,6 @@ test('clash#config', async () => {
 });
 
 test('clash#switch', async () => {
-  const result = await clash.switch('Proxy', 'v2net-auto');
+  const result = await clash.switch('PROXY', 'trojan-auto');
   assert.ok(result);
 });

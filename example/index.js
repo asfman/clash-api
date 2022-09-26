@@ -1,9 +1,14 @@
-const Clash = require('..');
+import { Clash } from '../index.js'
 
-const clash = Clash({
+const clash = new Clash({
   secret: 'song940@163.com',
-  api: 'http://lsong.me:9090'
+  api: 'http://clash.lsong.one:8888'
 });
+
+(async () => {
+  const proxies = await clash.proxies();
+  console.log('proxies', proxies);
+})();
 
 clash.traffic(({ up, down }) => {
   console.log('traffic: up: %i; down: %i', up, down);

@@ -1,4 +1,5 @@
 
 *.log
+*.lock
 
 node_modules/

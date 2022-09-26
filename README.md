@@ -14,9 +14,9 @@ $ npm install clash-proxy
 ### Example
 
 ```js
-const Clash = require('clash-proxy');
+import { Clash } from 'clash-api'
 
-const clash = Clash({
+const clash = new Clash({
   secret: '-- YOUR CLASH TOKEN HERE --',
   api: 'http://127.0.0.1:9090'
 });

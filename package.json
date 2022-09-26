@@ -1,7 +1,8 @@
 {
-  "name": "clash-proxy",
+  "name": "@song940/clash",
   "version": "0.0.1",
   "description": "simple javascript api for clash",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "node test"
@@ -23,6 +24,6 @@
   },
   "homepage": "https://github.com/song940/clash-proxy#readme",
   "dependencies": {
-    "isomorphic-fetch": "^2.2.1"
+    "isomorphic-fetch": "*"
   }
 }
